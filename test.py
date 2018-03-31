@@ -24,7 +24,7 @@ saver = tf.train.Saver(var_list=g_var)
 with tf.Session() as sess:
     print()
 
-    saver.load(sess, gan_checkpoint_path)
+    saver.restore(sess, gan_checkpoint_path)
     print('Model loaded\n')
 
     # Save images
