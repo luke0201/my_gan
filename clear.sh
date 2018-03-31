@@ -1,6 +1,7 @@
 #!/bin/bash
 
-rm -rf log
-mkdir log
-rm -rf checkpoint
-mkdir checkpoint
+for dir in [ dataset, checkpoint, log, output ]
+do
+  rm -r $dir
+  mkdir $dir
+done

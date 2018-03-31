@@ -2,6 +2,7 @@
 dataset
 checkpoint
 log
+output
 
 # Others
 __pycache__
