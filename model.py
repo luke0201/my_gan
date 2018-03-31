@@ -29,15 +29,15 @@ def discriminator(X, training, fake=False):
     with tf.variable_scope('discriminator', reuse=fake):
         fc1 = fc(X, 1024, name='hidden1')
         fc1 = relu(fc1)
-        fc1 = dropout(fc1, 0.3)
+        fc1 = dropout(fc1, 0.3, training=training)
 
         fc2 = fc(fc1, 512, name='hidden2')
         fc2 = relu(fc2)
-        fc2 = dropout(fc2, 0.3)
+        fc2 = dropout(fc2, 0.3, training=training)
 
         fc3 = fc(fc2, 256, name='hidden3')
         fc3 = relu(fc3)
-        fc3 = dropout(fc3, 0.3)
+        fc3 = dropout(fc3, 0.3, training=training)
 
         output = fc(fc3, 1, name='output')
         output = sigmoid(output)
