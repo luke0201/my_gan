@@ -20,9 +20,10 @@ g_z = model.generator(Z, training=False)
 with tf.name_scope('output'):
     Single_z = tf.placeholder(tf.float32, [784], name='Single_z')
     left, right = tf.reduce_min(Single_z), tf.reduce_max(Single_z)
-    make_png = tf.subtract(Single_z, tf.constant(left, tf.float32, [784]))
-    make_png = tf.scalar_mul(right - left, make_png)
+    make_png = tf.subtract(Single_z, tf.tile([left], [784]))
+    make_png = tf.scalar_mul(255. / (right - left), make_png)
     make_png = tf.cast(make_png, tf.uint8)
+    make_png = tf.reshape(make_png, [28, 28, 1])
     make_png = tf.image.encode_png(make_png)
 
 g_var = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope='generator')
@@ -38,7 +39,7 @@ with tf.Session() as sess:
     def save_images(imgs, name, offset):
         for i, img in enumerate(imgs):
             # Transform image
-            png_encoded = sess.run(make_png, feed_dict={Single_Z: img})
+            png_encoded = sess.run(make_png, feed_dict={Single_z: img})
 
             file_path = os.path.join(
                     img_output_dir, '{}{:04d}.png'.format(name, i + offset))
