@@ -18,10 +18,11 @@ Z = tf.placeholder(tf.float32, [batch_size, latent_size], name='Z')
 g_z = model.generator(Z, training=False)
 
 with tf.name_scope('output'):
-    Single_z = tf.placeholder(tf.float32, [784], name='Single_z')
-    left, right = tf.reduce_min(Single_z), tf.reduce_max(Single_z)
-    make_png = tf.subtract(Single_z, tf.tile([left], [784]))
-    make_png = tf.scalar_mul(255. / (right - left), make_png)
+    Single_image = tf.placeholder(tf.float32, [784], name='Single_image')
+    scale = tf.minimum(
+            127. + tf.reduce_min(Single_image),
+            127. - tf.reduce_max(Single_image)) 
+    make_png = tf.add(tf.scalar_mul(scale, X), 127.)
     make_png = tf.cast(make_png, tf.uint8)
     make_png = tf.reshape(make_png, [28, 28, 1])
     make_png = tf.image.encode_png(make_png)
@@ -38,7 +39,7 @@ with tf.Session() as sess:
     # Save images
     def save_images(imgs, name, offset):
         for i, img in enumerate(imgs):
-            png_encoded = sess.run(make_png, feed_dict={Single_z: img})
+            png_encoded = sess.run(make_png, feed_dict={Single_image: img})
 
             file_path = os.path.join(
                     img_output_dir, '{}{:04d}.png'.format(name, i + offset))
