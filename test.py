@@ -38,7 +38,6 @@ with tf.Session() as sess:
     # Save images
     def save_images(imgs, name, offset):
         for i, img in enumerate(imgs):
-            # Transform image
             png_encoded = sess.run(make_png, feed_dict={Single_z: img})
 
             file_path = os.path.join(
