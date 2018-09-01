@@ -1,7 +1,6 @@
 import os
 from tqdm import tqdm
 
-#from PIL import Image
 import numpy as np
 import tensorflow as tf
 
@@ -21,8 +20,8 @@ with tf.name_scope('output'):
     Single_image = tf.placeholder(tf.float32, [784], name='Single_image')
     scale = tf.minimum(
             127. + tf.reduce_min(Single_image),
-            127. - tf.reduce_max(Single_image)) 
-    make_png = tf.add(tf.scalar_mul(scale, X), 127.)
+            127. - tf.reduce_max(Single_image))
+    make_png = tf.add(tf.scalar_mul(scale, Z), 127.)
     make_png = tf.cast(make_png, tf.uint8)
     make_png = tf.reshape(make_png, [28, 28, 1])
     make_png = tf.image.encode_png(make_png)
@@ -51,5 +50,6 @@ with tf.Session() as sess:
         imgs = sess.run(g_z, feed_dict={Z: Z_batch})
 
         save_images(imgs, 'img', i)
+
 
 print('Done')

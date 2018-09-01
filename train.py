@@ -39,10 +39,13 @@ tf.summary.scalar('Generator Loss', g_loss)
 optimizer_d = tf.train.AdamOptimizer(learning_rate=2e-4, beta1=0.5)
 optimizer_g = tf.train.AdamOptimizer(learning_rate=2e-4, beta1=0.5)
 with tf.control_dependencies(tf.get_collection(tf.GraphKeys.UPDATE_OPS)):
-    var_d = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope='discriminator')
+    var_d = tf.get_collection(
+        tf.GraphKeys.TRAINABLE_VARIABLES, scope='discriminator')
     train_d = optimizer_d.minimize(d_loss, var_list=var_d)
-    var_g = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope='generator')
+    var_g = tf.get_collection(
+        tf.GraphKeys.TRAINABLE_VARIABLES, scope='generator')
     train_g = optimizer_g.minimize(g_loss, var_list=var_g)
+
 
 def main():
     mnist = MNISTLoader()
@@ -67,8 +70,10 @@ def main():
                 Z_batch = np.random.normal(size=[batch_size, latent_size])
                 X_batch, _ = mnist.next_batch(batch_size)
 
-                d_loss_val, _ = sess.run([d_loss, train_d], feed_dict={Z: Z_batch, X: X_batch})
-                g_loss_val, _ = sess.run([g_loss, train_g], feed_dict={Z: Z_batch, X: X_batch})
+                d_loss_val, _ = sess.run(
+                    [d_loss, train_d], feed_dict={Z: Z_batch, X: X_batch})
+                g_loss_val, _ = sess.run(
+                    [g_loss, train_g], feed_dict={Z: Z_batch, X: X_batch})
 
                 if iteration % iter_per_epoch == 0:
                     cur_epoch = iteration // iter_per_epoch
@@ -78,15 +83,18 @@ def main():
                     print('- Generator Loss:', g_loss_val)
                     print('- Discriminator Loss:', d_loss_val)
 
-                    summary = tf.summary.merge_all().eval(feed_dict={Z: Z_batch, X: X_batch})
+                    summary = tf.summary.merge_all().eval(
+                        feed_dict={Z: Z_batch, X: X_batch})
                     writer.add_summary(summary, global_step=cur_epoch)
                     print()
 
-        saver.save(sess, os.path.join(checkpoint_dir, 'final-' + str(start_time)))
+        saver.save(
+            sess, os.path.join(checkpoint_dir, 'final-' + str(start_time)))
 
     print('Training done')
     end_time = time.time()
     print('Elapsed time: ', end_time - start_time)
+
 
 if __name__ == '__main__':
     main()
